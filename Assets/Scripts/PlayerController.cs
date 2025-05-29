@@ -4,6 +4,58 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+	[Header("移動速度"), SerializeField] private float _moveSpeed = 5f;
+	[Header("上昇・下降速度"), SerializeField] private float _verticalSpeed = 3f;
+	[Header("回転のスムーズさ"), SerializeField] private float _turnSmoothTime = 0.1f;
+
+	private Vector2 _inputHorizontal; // 左スティック用（XZ移動）
+	private float _inputVertical;     // 上下移動用（例：A/Z, トリガー）
+
+	private CharacterController _controller;
+	private Transform _transform;
+	private float _turnVelocity;
+
+	public void OnMove(InputAction.CallbackContext context)
+	{
+		_inputHorizontal = context.ReadValue<Vector2>();
+	}
+
+	public void OnSwimVertical(InputAction.CallbackContext context)
+	{
+		_inputVertical = context.ReadValue<float>();
+	}
+
+	private void Awake()
+	{
+		_controller = GetComponent<CharacterController>();
+		_transform = transform;
+	}
+
+	private void Update()
+	{
+		Vector3 inputDir = new Vector3(_inputHorizontal.x, 0f, _inputHorizontal.y).normalized;
+		Vector3 verticalMove = Vector3.up * _inputVertical;
+
+		Vector3 move = (inputDir * _moveSpeed + verticalMove * _verticalSpeed) * Time.deltaTime;
+		_controller.Move(move);
+
+		// 向きを滑らかに変更（XZ方向のみ）
+		if (inputDir.magnitude > 0.1f)
+		{
+			float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg;
+			float angle = Mathf.SmoothDampAngle(_transform.eulerAngles.y, targetAngle, ref _turnVelocity, _turnSmoothTime);
+			_transform.rotation = Quaternion.Euler(0f, angle, 0f);
+		}
+	}
+}
+
+/*
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(CharacterController))]
+public class PlayerController : MonoBehaviour
+{
 	[Header("移動の速さ"), SerializeField]
 	private float _speed = 3;
 
@@ -102,3 +154,71 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 }
+
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(Rigidbody))]
+public class PlayerController : MonoBehaviour
+{
+	[Header("Movement Settings")]
+	[SerializeField] float moveSpeed = 10f;
+	[SerializeField] float rotationSpeed = 100f;
+	[SerializeField] float verticalSpeed = 5f;
+
+	private Rigidbody rb;
+	private PlayerControls controls;
+	private Vector2 moveInput;
+	private bool ascendPressed;
+	private bool descendPressed;
+
+	void Awake()
+	{
+		controls = new PlayerControls();
+
+		controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+		controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
+
+		controls.Player.Ascend.performed += ctx => ascendPressed = true;
+		controls.Player.Ascend.canceled += ctx => ascendPressed = false;
+
+		controls.Player.Descend.performed += ctx => descendPressed = true;
+		controls.Player.Descend.canceled += ctx => descendPressed = false;
+	}
+
+	void OnEnable() => controls.Enable();
+	void OnDisable() => controls.Disable();
+
+	void Start()
+	{
+		rb = GetComponent<Rigidbody>();
+		rb.useGravity = false;
+	}
+
+	void Update()
+	{
+		HandleMovement();
+	}
+
+	void HandleMovement()
+	{
+		// 水平移動（前進/後退、旋回）
+		float forwardInput = moveInput.y;
+		float turnInput = moveInput.x;
+
+		Vector3 forwardVelocity = transform.forward * forwardInput * moveSpeed;
+		float turn = turnInput * rotationSpeed * Time.deltaTime;
+		transform.Rotate(0, turn, 0);
+
+		// 上下移動（浮上・潜行）
+		float vertical = 0f;
+		if (ascendPressed) vertical += 1f;
+		if (descendPressed) vertical -= 1f;
+
+		Vector3 verticalVelocity = Vector3.up * vertical * verticalSpeed;
+
+		// 合成して適用
+		rb.velocity = forwardVelocity + verticalVelocity;
+	}
+}
+*/

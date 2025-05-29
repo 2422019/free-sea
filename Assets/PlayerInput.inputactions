@@ -34,21 +34,21 @@
                 },
                 {
                     "name": "Jump",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "63bf4100-70a1-4e43-b714-6f2755b2fe09",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
                 },
                 {
-                    "name": "New action",
-                    "type": "Button",
-                    "id": "71dbbc66-fb2d-49c7-847a-20c29c4a5526",
-                    "expectedControlType": "Button",
+                    "name": "SwimVertical",
+                    "type": "Value",
+                    "id": "3e927262-497c-4f59-898b-f3822d66698c",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -58,7 +58,7 @@
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": "Gamepad",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -284,15 +284,37 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "704f450f-9b1a-48e1-8add-0fdaf7cb71eb",
-                    "path": "",
+                    "name": "1D Axis",
+                    "id": "a6705edc-1902-4ffd-8b26-79efea15e6b8",
+                    "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
-                    "isComposite": false,
+                    "action": "SwimVertical",
+                    "isComposite": true,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "Negative",
+                    "id": "bd32ee8b-cdb4-4e89-af25-c3d6ce8230b8",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "SwimVertical",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Positive",
+                    "id": "1a3aba3c-83b8-42d0-89de-f4fe1351a566",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "SwimVertical",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
