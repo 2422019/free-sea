@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
 	private Transform _transform;
 	private float _turnVelocity;
 
+	private bool isUnderwater = false;
+
 	public void OnMove(InputAction.CallbackContext context)
 	{
 		_inputHorizontal = context.ReadValue<Vector2>();
@@ -45,6 +47,19 @@ public class PlayerController : MonoBehaviour
 			float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg;
 			float angle = Mathf.SmoothDampAngle(_transform.eulerAngles.y, targetAngle, ref _turnVelocity, _turnSmoothTime);
 			_transform.rotation = Quaternion.Euler(0f, angle, 0f);
+		}
+
+		// ƒNƒWƒ‰‚ª…‚Ì’†‚É‚¢‚é‚©‚Ç‚¤‚©‚ÅAudio‚ğØ‚è‘Ö‚¦‚é
+		bool nowUnderwater = WaterManager.Instance.IsUnderwater(transform.position);
+
+		if (nowUnderwater != isUnderwater)
+		{
+			isUnderwater = nowUnderwater;
+
+			if (isUnderwater)
+				AudioManager.Instance.PlayUnderwaterAudio();
+			else
+				AudioManager.Instance.PlayNormalAudio();
 		}
 	}
 }
