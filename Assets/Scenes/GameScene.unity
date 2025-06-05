@@ -672,7 +672,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 462038520}
-  m_Mesh: {fileID: 960416539}
+  m_Mesh: {fileID: 1192729541}
 --- !u!23 &462038523
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -938,7 +938,7 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_XDamping: 1
+  m_XDamping: 2
   m_YDamping: 1
   m_ZDamping: 1
   m_TargetMovementOnly: 1
@@ -992,6 +992,8 @@ MonoBehaviour:
   _moveSpeed: 5
   _verticalSpeed: 3
   _turnSmoothTime: 0.1
+  _maxPitchAngle: 45
+  _pitchSmoothTime: 0.2
 --- !u!143 &703320639
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1202,6 +1204,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 703320637}
+  angleRange: 10
+  speed: 1
 --- !u!1 &785809489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1296,13 +1300,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &960416539
+--- !u!43 &1192729541
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WaterVolume-28392
+  m_Name: WaterVolume-28396
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
