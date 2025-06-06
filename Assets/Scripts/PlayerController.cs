@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -10,6 +12,10 @@ public class PlayerController : MonoBehaviour
 
 	[Header("潜る角度の制限"), SerializeField] private float _maxPitchAngle = 45f;
 	[Header("上下回転のスムーズさ"), SerializeField] private float _pitchSmoothTime = 0.2f;
+
+	[Header("移動できる高さの制限"),]
+	[SerializeField] private float _minY = -20f;
+	[SerializeField] private float _maxY = 5f;
 
 	private Vector2 _inputHorizontal; // 左スティック用（XZ移動）
 	private float _inputVertical;     // 上下移動用（例：A/Z, トリガー）
@@ -45,6 +51,11 @@ public class PlayerController : MonoBehaviour
 
 		Vector3 move = (inputDir * _moveSpeed + verticalMove * _verticalSpeed) * Time.deltaTime;
 		_controller.Move(move);
+
+		Vector3 pos = _transform.position;
+		if(pos.y < _minY) pos.y = _minY;
+		if(pos.y > _maxY) pos.y = _maxY;
+		_transform.position = pos;
 
 		// 向きを滑らかに変更（XZ方向のみ）
 		if (inputDir.magnitude > 0.1f)
