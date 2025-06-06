@@ -124,6 +124,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &20357966 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1269120730060968, guid: 1a365141225c22e49a7bb976869b22a8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1873754796}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &45859072
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,6 +1003,8 @@ MonoBehaviour:
   _pitchSmoothTime: 0.2
   _minY: -20
   _maxY: 0.5
+  surfaceFloor: {fileID: 462038520}
+  surfaceFog: {fileID: 20357966}
 --- !u!143 &703320639
 CharacterController:
   m_ObjectHideFlags: 0

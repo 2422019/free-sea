@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private float _minY = -20f;
 	[SerializeField] private float _maxY = 5f;
 
+	[SerializeField] private GameObject surfaceFloor;
+	[SerializeField] private GameObject surfaceFog;
+
 	private Vector2 _inputHorizontal; // 左スティック用（XZ移動）
 	private float _inputVertical;     // 上下移動用（例：A/Z, トリガー）
 
@@ -71,17 +74,25 @@ public class PlayerController : MonoBehaviour
 		float currentYaw = _transform.eulerAngles.y;
 		_transform.rotation = Quaternion.Euler(_currentPitch, currentYaw, 0f);
 
-		// クジラが水の中にいるかどうかでAudioを切り替える
 		bool nowUnderwater = WaterManager.Instance.IsUnderwater(transform.position);
 
+		// クジラが水の中にいるかどうかで海の表面を表示しAudioを切り替える
 		if (nowUnderwater != isUnderwater)
 		{
 			isUnderwater = nowUnderwater;
 
 			if (isUnderwater)
+			{
 				AudioManager.Instance.PlayUnderwaterAudio();
+				//surfaceFloor.SetActive(false);
+				//surfaceFog.SetActive(false);
+			}
 			else
+			{
 				AudioManager.Instance.PlayNormalAudio();
+				//surfaceFloor.SetActive(true);
+				//surfaceFog.SetActive(true);
+			}
 		}
 	}
 }
