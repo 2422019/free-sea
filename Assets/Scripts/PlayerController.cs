@@ -17,8 +17,11 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private float _minY = -20f;
 	[SerializeField] private float _maxY = 5f;
 
+	[Header("海面・霧のオブジェクト")]
 	[SerializeField] private GameObject surfaceFloor;
 	[SerializeField] private GameObject surfaceFog;
+
+	[SerializeField] private FogController fogController;
 
 	private Vector2 _inputHorizontal; // 左スティック用（XZ移動）
 	private float _inputVertical;     // 上下移動用（例：A/Z, トリガー）
@@ -76,6 +79,14 @@ public class PlayerController : MonoBehaviour
 
 		bool nowUnderwater = WaterManager.Instance.IsUnderwater(transform.position);
 
+		if(surfaceFloor.activeSelf)
+		{
+			Vector3 floorPos = surfaceFloor.transform.position;
+			floorPos.x = _transform.position.x;
+			floorPos.z = _transform.position.z;
+			surfaceFloor.transform.position = floorPos;
+		}
+
 		// クジラが水の中にいるかどうかで海の表面を表示しAudioを切り替える
 		if (nowUnderwater != isUnderwater)
 		{
@@ -84,14 +95,14 @@ public class PlayerController : MonoBehaviour
 			if (isUnderwater)
 			{
 				AudioManager.Instance.PlayUnderwaterAudio();
-				//surfaceFloor.SetActive(false);
-				//surfaceFog.SetActive(false);
+				surfaceFog.SetActive(false);
+				fogController.FadeOut();
 			}
 			else
 			{
 				AudioManager.Instance.PlayNormalAudio();
-				//surfaceFloor.SetActive(true);
-				//surfaceFog.SetActive(true);
+				surfaceFog.SetActive(true);
+				fogController.FadeIn();
 			}
 		}
 	}
