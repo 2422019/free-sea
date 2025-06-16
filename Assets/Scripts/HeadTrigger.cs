@@ -3,7 +3,7 @@ using UnityEngine;
 public class HeadTrigger : MonoBehaviour
 {
 	[Header("ヘディング時に加える力")]
-	public float headingForce = 5f;
+	[SerializeField] private float headingForce = 5f;
 
 	private void OnTriggerEnter(Collider other)
 	{
@@ -12,9 +12,13 @@ public class HeadTrigger : MonoBehaviour
 			Rigidbody rb = other.GetComponent<Rigidbody>();
 			if (rb != null)
 			{
-				// クジラの前方方向に力を加える（ヘディング）
-				Vector3 headingDirection = transform.forward;
+				// Y方向を一度リセットしてから跳ねさせる
+				rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+				// クジラの前＋上に向けて力を加える
+				Vector3 headingDirection = (transform.forward + Vector3.up * 0.5f).normalized;
 				rb.AddForce(headingDirection * headingForce, ForceMode.Impulse);
+
 			}
 		}
 	}
