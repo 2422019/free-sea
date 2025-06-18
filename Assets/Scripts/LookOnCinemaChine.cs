@@ -5,10 +5,20 @@ public class LockOnCinemachine : MonoBehaviour
 {
 	[SerializeField] private Transform player;
 	[SerializeField] private CinemachineVirtualCamera virtualCamera;
+	[SerializeField] private CinemachineTargetGroup targetGroup;
 	[SerializeField] private float lockOnRange = 15f;
 	[SerializeField] private string enemyTag = "Ball";
-
+	[SerializeField] private GameObject markerPrefab; 　// マーカー
 	private Transform lockTarget;
+	private GameObject currentMarker;
+
+	void Start()
+	{
+		// 初期状態：プレイヤーのみ
+		targetGroup.m_Targets = new CinemachineTargetGroup.Target[1] {
+			new CinemachineTargetGroup.Target { target = player, weight = 1f, radius = 1f }
+		};
+	}
 
 	void Update()
 	{
@@ -22,7 +32,6 @@ public class LockOnCinemachine : MonoBehaviour
 
 		if (lockTarget != null)
 		{
-			// ロック対象が消えたら解除
 			float dist = Vector3.Distance(player.position, lockTarget.position);
 			if (dist > lockOnRange || !lockTarget.gameObject.activeInHierarchy)
 				Unlock();
@@ -48,13 +57,33 @@ public class LockOnCinemachine : MonoBehaviour
 		if (closest != null)
 		{
 			lockTarget = closest;
-			virtualCamera.LookAt = lockTarget; // ロックオン
+			targetGroup.m_Targets = new CinemachineTargetGroup.Target[2] {
+				new CinemachineTargetGroup.Target { target = player, weight = 1f, radius = 1f },
+				new CinemachineTargetGroup.Target { target = lockTarget, weight = 1f, radius = 1f }
+			};
+
+			//	ターゲットマーカーの生成
+			if (markerPrefab != null)
+			{
+				currentMarker = Instantiate(markerPrefab, lockTarget);
+				currentMarker.transform.localPosition = Vector3.up * 1.5f; // 頭上に表示など
+			}
 		}
 	}
 
 	void Unlock()
 	{
 		lockTarget = null;
-		virtualCamera.LookAt = player; // ロック解除
+
+		targetGroup.m_Targets = new CinemachineTargetGroup.Target[1] {
+			new CinemachineTargetGroup.Target { target = player, weight = 1f, radius = 1f }
+		};
+
+		// ターゲットマーカーの削除
+		if (currentMarker != null)
+		{
+			Destroy(currentMarker);
+			currentMarker = null;
+		}
 	}
 }

@@ -18,7 +18,6 @@ public class HeadTrigger : MonoBehaviour
 				// ƒNƒWƒ‰‚Ì‘O{ã‚ÉŒü‚¯‚Ä—Í‚ğ‰Á‚¦‚é
 				Vector3 headingDirection = (transform.forward + Vector3.up * 0.5f).normalized;
 				rb.AddForce(headingDirection * headingForce, ForceMode.Impulse);
-
 			}
 		}
 	}
