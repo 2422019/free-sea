@@ -132,7 +132,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1.1979861
+  m_Radius: 1.16
   m_Center: {x: -0.04785508, y: 0.9737053, z: 0}
 --- !u!114 &1175455025498663185
 MonoBehaviour:
@@ -147,4 +147,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buoyancyForce: 10
-  waterHeight: 0.8
+  waterHeight: 1.3
