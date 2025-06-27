@@ -14,6 +14,8 @@ public class LockOnCinemachine : MonoBehaviour
 
 	void Start()
 	{
+		virtualCamera.m_Lens.FieldOfView = 90f;
+
 		// 初期状態：プレイヤーのみ
 		targetGroup.m_Targets = new CinemachineTargetGroup.Target[1] {
 			new CinemachineTargetGroup.Target { target = player, weight = 1f, radius = 1f }
