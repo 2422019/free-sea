@@ -2,55 +2,77 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class SceneTransition : MonoBehaviour
 {
-	[SerializeField] private Image fadeImage;
-	[SerializeField] private float fadeDuration = 1.0f;
-	[SerializeField] private string gameSceneName = "GameScene";
-	[SerializeField] private AudioSource bgmSource;
+    [Header("UI・フェード設定")]
+    [SerializeField] private Image fadeImage;
+    [SerializeField] private float fadeDuration = 1.0f;
+    [SerializeField] private string gameSceneName = "GameScene";
 
-	private bool isFading = false;
+    [Header("BGM")]
+    [SerializeField] private AudioSource bgmSource;
 
-	void Update()
-	{
-		if (!isFading && Input.GetMouseButtonDown(0))
-		{
-			StartCoroutine(FadeAndLoadScene());
-		}
-	}
+    [Header("フェードアウトするテキスト")] 
+    [SerializeField] private TextMeshProUGUI textToFade;
+    //[SerializeField] private Text textToFade;
+    
+   
 
-	private IEnumerator FadeAndLoadScene()
-	{
-		isFading = true;
+    private bool isFading = false;
 
-		float timer = 0f;
-		Color color = fadeImage.color;
-		float startVolume = bgmSource != null ? bgmSource.volume : 1f;
+    void Update()
+    {
+        if (!isFading && Input.anyKeyDown)
+        {
+            StartCoroutine(FadeAndLoadScene());
+        }
+    }
 
-		while (timer < fadeDuration)
-		{
-			timer += Time.deltaTime;
-			float t = Mathf.Clamp01(timer / fadeDuration);
+    private IEnumerator FadeAndLoadScene()
+    {
+        isFading = true;
 
-			// フェード画像
-			fadeImage.color = new Color(color.r, color.g, color.b, t);
+        float timer = 0f;
+        Color fadeColor = fadeImage.color;
+        float startVolume = bgmSource != null ? bgmSource.volume : 1f;
 
-			// BGM 音量を徐々に下げる
-			if (bgmSource != null)
-			{
-				bgmSource.volume = Mathf.Lerp(startVolume, 0f, t);
-			}
+        // 初期状態のテキスト色を取得
+        Color textColor = textToFade != null ? textToFade.color : Color.white;
 
-			yield return null;
-		}
+        while (timer < fadeDuration)
+        {
+            timer += Time.deltaTime;
+            float t = Mathf.Clamp01(timer / fadeDuration);
 
-		// フェード後に完全停止
-		if (bgmSource != null)
-		{
-			bgmSource.Stop();
-		}
+            // フェード画像の透明度を上げる
+            fadeImage.color = new Color(fadeColor.r, fadeColor.g, fadeColor.b, t);
 
-		SceneManager.LoadScene(gameSceneName);
-	}
+            // BGM 音量を下げる
+            if (bgmSource != null)
+            {
+                bgmSource.volume = Mathf.Lerp(startVolume, 0f, t);
+            }
+
+            // テキストの透明度を下げる
+            if (textToFade != null)
+            {
+                Color c = textColor;
+                c.a = 1f - t;
+                textToFade.color = c;
+            }
+
+            yield return null;
+        }
+
+        // フェード完了後にBGM停止
+        if (bgmSource != null)
+        {
+            bgmSource.Stop();
+        }
+
+        // シーン遷移
+        SceneManager.LoadScene(gameSceneName);
+    }
 }

@@ -46,13 +46,19 @@ public class PlayerController : MonoBehaviour
 	{
 		_controller = GetComponent<CharacterController>();
 		_transform = transform;
+
+		// カーソルロック
+		Cursor.lockState = CursorLockMode.Locked;
+
+		// カーソル非表示
+		Cursor.visible = false;
 	}
 
 	private void Update()
 	{
 		Transform cam = Camera.main.transform;
 
-		// カメラ基準の移動方向計算
+		// カメラ基準
 		Vector3 camForward = Vector3.Scale(cam.forward, new Vector3(1, 0, 1)).normalized;
 		Vector3 camRight = cam.right;
 
@@ -76,7 +82,7 @@ public class PlayerController : MonoBehaviour
 			_transform.rotation = Quaternion.Euler(_transform.eulerAngles.x, angle, 0f);
 		}
 
-		// 上下回転（Pitch） - 前進時のみ反映（Sキー問題対策）
+		// 上下回転（Pitch） - 前進時のみ反映
 		float forwardAmount = Vector3.Dot(moveDir.normalized, _transform.forward);
 		float targetPitch = -_inputVertical * _maxPitchAngle * Mathf.Clamp01(forwardAmount);
 		_currentPitch = Mathf.SmoothDamp(_currentPitch, targetPitch, ref _pitchVelocity, _pitchSmoothTime);

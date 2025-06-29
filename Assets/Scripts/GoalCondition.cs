@@ -1,28 +1,49 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GoalCondition : MonoBehaviour
 {
-	[SerializeField] private ParticleSystem goalEffect;
+    [Header("正解のボールタグ")]
+    [SerializeField] private string correctTag = "CorrectBall";
 
-	void Start()
-	{
-		//goalEffect.enabled = false;
-	}
+    [Header("サウンド設定")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip successClip;
+    [SerializeField] private AudioClip failClip;
 
-	private void OnTriggerEnter(Collider other)
-	{
-		if(other.CompareTag("Ball"))
-		{
-			if (goalEffect != null)
-			{
-				goalEffect.transform.position = other.transform.position;
-				//goalEffect.Clear;
-				goalEffect.Play();
-				Debug.Log("紙吹雪");
-			}
-			Debug.Log("ゴールしました");
-		}
-	}
+    private void OnTriggerEnter(Collider other)
+    {
+        // Ballタグを持っていないものは無視
+        if (!other.CompareTag("Ball") && !other.CompareTag("CorrectBall")) return;
+
+        // 正解判定
+        if (other.CompareTag(correctTag))
+        {
+            Debug.Log("正解のボール！");
+            PlaySound(successClip);
+        }
+        else
+        {
+            Debug.Log("間違ったボール！");
+            PlaySound(failClip);
+        }
+
+        // オブジェクトプールに返却または削除
+        var poolRef = other.GetComponent<ObjectPoolReference>();
+        if (poolRef != null && poolRef.Pool != null)
+        {
+            poolRef.Pool.Return(other.gameObject);
+        }
+        else
+        {
+            Destroy(other.gameObject);
+        }
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
 }

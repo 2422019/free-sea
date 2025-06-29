@@ -7,7 +7,7 @@ public class HeadTrigger : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.CompareTag("Ball"))
+		if (other.CompareTag("Ball") || (other.CompareTag("CorrectBall")))
 		{
 			Rigidbody rb = other.GetComponent<Rigidbody>();
 			if (rb != null)
